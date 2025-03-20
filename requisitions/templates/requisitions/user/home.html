@@ -1,0 +1,141 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Requisição de Materiais</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <!-- CSS Personalizado -->
+    <link href="{% static 'assets/css/styles.css' %}" rel="stylesheet">
+</head>
+<body>
+    <div class="login-container">
+        <h2 class="text-center mb-4">Sistema de Requisição de Materiais</h2>
+        <form method="post">
+            {% csrf_token %}
+            <!-- Nome do Estudante -->
+            <div class="form-group">
+                <label for="{{ form.nome_estudante.id_for_label }}">Nome do Estudante</label>
+                {{ form.nome_estudante }}
+            </div>
+
+            <!-- Matrícula -->
+            <div class="form-group">
+                <label for="{{ form.matricula.id_for_label }}">Matrícula</label>
+                {{ form.matricula }}
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">Email</label>
+                {{ form.email }}
+            </div>
+
+            <!-- Curso -->
+            <div class="form-group">
+                <label for="{{ form.curso.id_for_label }}">Curso</label>
+                {{ form.curso }}
+            </div>
+
+            <!-- Deseja Caderno? -->
+            <div class="form-group">
+                <label>Deseja Caderno?</label>
+                <div class="form-check">
+                    <input type="checkbox" name="deseja_caderno" id="deseja_caderno_sim" value="True" class="form-check-input">
+                    <label class="form-check-label" for="deseja_caderno_sim">Sim</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" name="deseja_caderno" id="deseja_caderno_nao" value="False" class="form-check-input">
+                    <label class="form-check-label" for="deseja_caderno_nao">Não</label>
+                </div>
+            </div>
+
+            <!-- Deseja Garrafa? -->
+            <div class="form-group">
+                <label>Deseja Garrafa?</label>
+                <div class="form-check">
+                    <input type="checkbox" name="deseja_garrafa" id="deseja_garrafa_sim" value="True" class="form-check-input">
+                    <label class="form-check-label" for="deseja_garrafa_sim">Sim</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" name="deseja_garrafa" id="deseja_garrafa_nao" value="False" class="form-check-input">
+                    <label class="form-check-label" for="deseja_garrafa_nao">Não</label>
+                </div>
+            </div>
+
+            <!-- Deseja Camisa? -->
+            <div class="form-group">
+                <label>Deseja Camisa?</label>
+                <div class="form-check">
+                    <input type="checkbox" name="deseja_camisa" id="deseja_camisa_sim" value="True" class="form-check-input" onchange="toggleCamisa(this)">
+                    <label class="form-check-label" for="deseja_camisa_sim">Sim</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" name="deseja_camisa" id="deseja_camisa_nao" value="False" class="form-check-input" onchange="toggleCamisa(this)">
+                    <label class="form-check-label" for="deseja_camisa_nao">Não</label>
+                </div>
+            </div>
+
+            <!-- Tamanho da Camisa (condicional) -->
+            <div class="form-group" id="tamanho-camisa-group" style="display: none;">
+                <label for="{{ form.tamanho_camisa.id_for_label }}">Tamanho da Camisa</label>
+                {{ form.tamanho_camisa }}
+            </div>
+
+            <!-- Bolsista PAE? -->
+            <div class="form-group">
+                <label>Marque aqui se você for Bolsista PAAE?</label>
+                <div class="form-check">
+                    <input type="checkbox" name="bolsista_paae" id="bolsista_paae_sim" value="True" class="form-check-input">
+                    <label class="form-check-label" for="bolsista_paae_sim">Sim</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" name="bolsista_paae" id="bolsista_paae_nao" value="False" class="form-check-input">
+                    <label class="form-check-label" for="bolsista_paae_nao">Não</label>
+                </div>
+            </div>
+
+            <!-- Botão de Cadastrar -->
+            <button type="submit" class="btn btn-custom">Cadastrar</button>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS e dependências -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        function toggleCamisa(checkbox) {
+            const tamanhoCamisaGroup = document.getElementById('tamanho-camisa-group');
+            if (checkbox.value === "True" && checkbox.checked) {
+                tamanhoCamisaGroup.style.display = 'block'; // Mostra o campo
+            } else {
+                tamanhoCamisaGroup.style.display = 'none'; // Oculta o campo
+            }
+        }
+    
+        // Adiciona o evento onchange ao campo "Deseja Camisa?"
+        document.addEventListener('DOMContentLoaded', function () {
+            const desejaCamisaSim = document.querySelector('#deseja_camisa_sim');
+            const desejaCamisaNao = document.querySelector('#deseja_camisa_nao');
+            if (desejaCamisaSim && desejaCamisaNao) {
+                desejaCamisaSim.addEventListener('change', function () {
+                    toggleCamisa(this);
+                });
+                desejaCamisaNao.addEventListener('change', function () {
+                    toggleCamisa(this);
+                });
+    
+                // Verifica o estado inicial do checkbox
+                toggleCamisa(desejaCamisaSim);
+                toggleCamisa(desejaCamisaNao);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Listar Requisições</title>
+</head>
+<body>
+    <h1>List of Requisitions</h1>
+    <ul>
+        {% for requisicao in requisicoes %}
+            <li>
+                Requisição {{ requisicao.id_requisicao }} - Estudante: {{ requisicao.estudante.nome_estudante }}
+                <a href="{% url 'adicionar_item_requisicao' requisicao.id_requisicao %}">Add Item</a>
+            </li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'criar_requisicao' %}">Create New Requisition</a>
+</body>
+</html>

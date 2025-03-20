@@ -1,0 +1,26 @@
+<!--
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cadastrar Estudante</title>
+    <script>
+        function setDateTime() {
+            
+            const now = new Date();
+            const formattedDateTime = now.toISOString().slice(0, 19).replace("T", " ");
+            document.getElementById('id_data').value = formattedDateTime;
+        }
+    </script>
+</head>
+<body>
+    <h1>Cadastrar Estudante</h1>
+    <form method="post" onsubmit="setDateTime()">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="hidden" id="id_data" name="data">   Campo oculto para a data e hora 
+        <button type="submit">Cadastrar</button>
+    </form>
+    <a href="{% url 'home' %}">Voltar para a página inicial</a>
+</body>
+</html>
+-->

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Criar Requisição</title>
+</head>
+<body>
+    <h1>Create Requisition</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit</button>
+    </form>
+    <a href="{% url 'listar_requisicoes' %}">Back to List</a>
+</body>
+</html>

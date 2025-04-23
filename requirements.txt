@@ -1,0 +1,11 @@
+Django==4.2.0
+reportlab
+openpyxl
+Django==4.2.0
+reportlab
+openpyxl
+gunicorn==20.1.0
+whitenoise==6.4.0
+python-dotenv==1.0.0
+# Caso vá usar PostgreSQL no futuro
+psycopg2-binary==2.9.6  

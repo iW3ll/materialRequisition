@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Editar Requisição{% endblock %}
+
+{% block body_class %}relatorio-fullscreen{% endblock %}
+
+{% block content %}
+<div class="fullscreen-container">
+    
+    <div class="fullscreen-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2 class="mb-0">Painel Administrativo</h2>
+            <div class="export-buttons">
+                <a href="{% url 'exportar_excel' %}" class="btn btn-success">
+                    <i class="fas fa-file-excel"></i> Excel
+                </a>
+                <a href="{% url 'exportar_pdf' %}" class="btn btn-danger ml-2">
+                    <i class="fas fa-file-pdf"></i> PDF
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Conteúdo do formulário de edição -->
+    <div class="container mt-4 d-flex justify-content-center">
+        <div class="w-100" style="max-width: 900px;">
+            <h2 class="mb-4 text-center">Editar Requisição</h2>
+            <div class="card">
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>{{ form.nome_estudante.label }}</label>
+                                    {{ form.nome_estudante }}
+                                    {{ form.nome_estudante.errors }}
+                                </div>
+                                <div class="form-group">
+                                    <label>{{ form.matricula.label }}</label>
+                                    {{ form.matricula }}
+                                    {{ form.matricula.errors }}
+                                </div>
+                                <div class="form-group">
+                                    <label>{{ form.email.label }}</label>
+                                    {{ form.email }}
+                                    {{ form.email.errors }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>{{ form.curso.label }}</label>
+                                    {{ form.curso }}
+                                    {{ form.curso.errors }}
+                                </div>
+                                <div class="form-group">
+                                    <label>{{ form.bolsista_paae.label }}</label>
+                                    {{ form.bolsista_paae }}
+                                    {{ form.bolsista_paae.errors }}
+                                </div>
+                            </div>
+                        </div>
+        
+                        <div class="row mt-3">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>{{ form.deseja_caderno.label }}</label>
+                                    {{ form.deseja_caderno }}
+                                </div>
+                                <div class="form-group">
+                                    <label>Data de Entrega do caderno</label>
+                                    {{ form.data_entrega_caderno }}
+                                </div>
+                                
+                            </div>
+        
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>{{ form.deseja_garrafa.label }}</label>
+                                    {{ form.deseja_garrafa }}
+                                </div>
+                                <div class="form-group">
+                                    <label>Data de Entrega da Garrafa</label>
+                                    {{ form.data_entrega_garrafa }}
+                                </div>
+                            </div>
+        
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>{{ form.deseja_camisa.label }}</label>
+                                    {{ form.deseja_camisa }}
+                                </div>
+                                <div class="form-group">
+                                    <label>{{ form.tamanho_camisa.label }}</label>
+                                    {{ form.tamanho_camisa }}
+                                </div>
+                                <div class="form-group">
+                                    <label>Data de Entrega da Camisa</label>
+                                    {{ form.data_entrega_camisa }}
+                                </div>
+                            </div>
+                            <!--
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>{{ form.deseja_sapato.label }}</label>
+                                    {{ form.deseja_sapato }}
+                                </div>
+                                <div class="form-group">
+                                    <label>Data de Entrega do Sapato</label>
+                                    {{ form.data_entrega_sapato }}
+                                </div>
+                            </div>
+                        </div>
+                        -->
+        
+                        <div class="form-group mt-6">
+                            <div class="text-center">
+                                <div class="form-group">
+                                    <label for="{{ form.observacao.id_for_label }}">{{ form.observacao.label }}</label>
+                                    <textarea 
+                                        class="form-control" 
+                                        id="{{ form.observacao.id_for_label }}" 
+                                        name="{{ form.observacao.name }}" 
+                                        rows="3"
+                                        placeholder="Digite suas observações aqui...">{{ form.observacao.value|default_if_none:'' }}</textarea>
+                                    {% if form.observacao.errors %}
+                                        <div class="invalid-feedback" style="display: block;">
+                                            {{ form.observacao.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+        
+                        <div class="form-group mt-8">
+                            <div class="form-check">
+                                <label>{{ form.pedido_entregue.label }}</label>
+                                {{ form.pedido_entregue }}
+                            </div>
+                        </div>
+        
+                        <div class="form-group text-center col-md-5">
+                            <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                            <a href="{% url 'relatorio' %}" class="btn btn-secondary">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,279 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block body_class %}relatorio-fullscreen{% endblock %}
+
+{% block content %}
+<div class="fullscreen-container">
+    <div class="fullscreen-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2 class="mb-0">Painel Administrativo</h2>
+            <div class="export-buttons">
+                <a href="{% url 'exportar_excel' %}" class="btn btn-success">
+                    <i class="fas fa-file-excel"></i> Excel
+                </a>
+                <a href="{% url 'exportar_pdf' %}" class="btn btn-danger ml-2">
+                    <i class="fas fa-file-pdf"></i> PDF
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="filter-bar mb-2 mt-5">
+        <h5>Filtrar por:</h5>
+        <div class="btn-group-toggle" data-toggle="buttons">
+            <label class="btn btn-outline-primary m-1">
+                <input type="checkbox" class="filter-checkbox" data-filter="bolsista-paae"> Bolsista PAAE
+            </label>
+            <label class="btn btn-outline-primary m-1">
+                <input type="checkbox" class="filter-checkbox" data-filter="caderno"> Caderno
+            </label>
+            <label class="btn btn-outline-primary m-1">
+                <input type="checkbox" class="filter-checkbox" data-filter="camisa"> Camisa
+            </label>
+            <label class="btn btn-outline-primary m-1">
+                <input type="checkbox" class="filter-checkbox" data-filter="garrafa"> Garrafa
+            </label>
+        </div>
+    </div>
+
+    <!-- Lista de Estudantes -->
+    <div class="fullscreen-content">
+        {% for estudante in estudantes %}
+        <div class="material-card
+            {% if estudante.bolsista_paae %}bolsista-paae{% endif %}
+            {% if estudante.deseja_camisa %} camisa{% endif %}
+            {% if estudante.deseja_caderno %} caderno{% endif %}
+            {% if estudante.deseja_garrafa %} garrafa{% endif %}">
+            
+            <h3 class="card-title">{{ estudante.nome_estudante }}</h3>
+
+            <div class="card-detail">
+                <span class="card-label">Matrícula:</span>
+                <span class="card-value">{{ estudante.matricula }}</span>
+            </div>
+
+            <div class="card-detail">
+                <span class="card-label">Curso:</span>
+                <span class="card-value">{{ estudante.get_curso_display }}</span>
+            </div>
+
+            <div class="card-detail">
+                <span class="card-label">Bolsista PAAE:</span>
+                <span class="card-value">
+                    {% if estudante.bolsista_paae %}
+                        <span class="badge badge-success">Sim</span>
+                    {% else %}
+                        <span class="badge badge-secondary">Não</span>
+                    {% endif %}
+                </span>
+            </div>
+
+            <div class="card-detail">
+                <span class="card-label">Materiais:</span>
+                <span class="card-value">
+                    {% if estudante.deseja_caderno %}<span class="status-badge status-ok">Caderno</span>{% endif %}
+                    {% if estudante.deseja_garrafa %}<span class="status-badge status-ok">Garrafa</span>{% endif %}
+                    {% if estudante.deseja_camisa %}<span class="status-badge status-ok">Camisa {{ estudante.tamanho_camisa|default:"" }}</span>{% endif %}
+                </span>
+            </div>
+
+            {% if estudante.deseja_caderno %}
+            <div class="card-detail">
+                <span class="card-label">Data de Entrega do Caderno:</span>
+                <span class="card-value">
+                    {% if estudante.data_entrega_caderno %}
+                        {{ estudante.data_entrega_caderno|date:"d/m/Y" }}
+                    {% else %}
+                        <em>Não definida</em>
+                    {% endif %}
+                </span>
+            </div>
+            {% endif %}
+
+            {% if estudante.deseja_garrafa %}
+            <div class="card-detail">
+                <span class="card-label">Data de Entrega da Garrafa:</span>
+                <span class="card-value">
+                    {% if estudante.data_entrega_garrafa %}
+                        {{ estudante.data_entrega_garrafa|date:"d/m/Y" }}
+                    {% else %}
+                        <em>Não definida</em>
+                    {% endif %}
+                </span>
+            </div>
+            {% endif %}
+
+            {% if estudante.deseja_camisa %}
+            <div class="card-detail">
+                <span class="card-label">Data de Entrega da Camisa:</span>
+                <span class="card-value">
+                    {% if estudante.data_entrega_camisa %}
+                        {{ estudante.data_entrega_camisa|date:"d/m/Y" }}
+                    {% else %}
+                        <em>Não definida</em>
+                    {% endif %}
+                </span>
+            </div>
+            {% endif %}
+
+            <div class="card-detail">
+                <span class="card-label">Situação:</span>
+                <span class="card-value">
+                    {% if estudante.pedido_entregue %}
+                        <span class="status-badge status-ok">Entregue</span>
+                    {% else %}
+                        <span class="status-badge status-pending">Pendente</span>
+                    {% endif %}
+                </span>
+            </div>
+
+            <div class="action-buttons">
+                <a href="{% url 'editar_requisicao' estudante.pk %}" class="btn btn-primary btn-icon">
+                    <i class="fas fa-edit"></i> Editar
+                </a>
+                
+                <button class="btn btn-danger btn-icon delete-btn" 
+                        data-url="{% url 'excluir_requisicao' estudante.pk %}">
+                    <i class="fas fa-trash"></i> Excluir
+                </button>
+            </div>
+        </div>
+        {% empty %}
+        <div class="material-card">
+            <h3 class="card-title">Nenhuma requisição encontrada</h3>
+            <p>Não há registros de requisições no sistema.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Rodapé inteligente que aparece ao aproximar o mouse da base -->
+<div id="smart-footer" style="position: fixed; bottom: -60px; width: 100%; background: #f8f9fa; padding: 10px; z-index: 1000; border-top: 1px solid #dee2e6; transition: bottom 0.3s ease;">
+    <div class="text-center">
+        <span style="margin-right: 15px;">
+            Precisa de ajuda? 
+            <a href="mailto:wesley_silva@ifba.edu.br?subject=Suporte%20Sistema%20requisitar%20materiais"" class="btn btn-info btn-sm ml-2">
+                <i class="fas fa-envelope"></i> wesley_silva@ifba.edu.br
+            </a>
+        </span>
+    </div>
+</div>
+
+<!-- Área sensível ao mouse (invisível) -->
+<div id="footer-trigger" style="position: fixed; bottom: 0; width: 100%; height: 30px; z-index: 999;"></div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const footer = document.getElementById('smart-footer');
+    const trigger = document.getElementById('footer-trigger');
+    let timeoutId;
+    
+    // Mostra o footer quando o mouse entra na área de trigger
+    trigger.addEventListener('mouseenter', function() {
+        clearTimeout(timeoutId);
+        footer.style.bottom = '0';
+    });
+    
+    // Esconde o footer depois de 2 segundos sem interação
+    footer.addEventListener('mouseleave', function() {
+        timeoutId = setTimeout(() => {
+            footer.style.bottom = '-60px';
+        }, 2000);
+    });
+    
+    // Mantém visível se o mouse estiver sobre o footer
+    footer.addEventListener('mouseenter', function() {
+        clearTimeout(timeoutId);
+    });
+    
+    // Mostra ao chegar no final da página com scroll
+    window.addEventListener('scroll', function() {
+        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100) {
+            footer.style.bottom = '0';
+        } else if (!footer.matches(':hover')) {
+            footer.style.bottom = '-60px';
+        }
+    });
+});
+</script>
+
+<!-- Rodapé fixo na parte inferior --> 
+<!--
+<footer class="footer fixed-bottom bg-light py-2">
+    <div class="container-fluid text-center">
+        <a href="mailto:seuemail@exemplo.com?subject=Suporte%20Sistema%20Materiais" 
+           class="btn btn-info btn-sm">
+            <i class="fas fa-life-ring"></i> Suporte por Email
+        </a>
+    </div>
+</footer>
+-->
+
+<!-- Modal de Confirmação -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">Confirmar Exclusão</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Tem certeza que deseja excluir esta requisição?</p>
+                <p class="text-muted">Esta ação não pode ser desfeita.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <form id="deleteForm" method="POST" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Confirmar Exclusão</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    // Configuração do modal de exclusão
+    $('.delete-btn').click(function(e) {
+        e.preventDefault();
+        var deleteUrl = $(this).data('url');
+        $('#deleteForm').attr('action', deleteUrl);
+        $('#confirmDeleteModal').modal('show');
+    });
+
+    // Filtros
+    $('.filter-checkbox').change(function() {
+        let activeFilters = [];
+        $('.filter-checkbox:checked').each(function() {
+            activeFilters.push($(this).data('filter'));
+        });
+
+        if(activeFilters.length === 0) {
+            $('.material-card').show();
+            return;
+        }
+
+        $('.material-card').each(function() {
+            let card = $(this);
+            let shouldShow = true;
+            
+            activeFilters.forEach(function(filter) {
+                if(!card.hasClass(filter)) {
+                    shouldShow = false;
+                    return false;
+                }
+            });
+            
+            card.toggle(shouldShow);
+        });
+    });
+});
+</script>
+{% endblock %}

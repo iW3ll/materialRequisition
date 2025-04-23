@@ -1,0 +1,195 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Requisição de Materiais</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link href="{% static 'assets/css/styles.css' %}" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <!-- Outros itens do menu... -->
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="relatorio">
+                        <i class="fas fa-list"></i> Acesso do Responsável
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</head>
+<body>
+    <div class="login-container">
+        <h2 class="text-center mb-4">Sistema de Requisição de Materiais</h2>
+        <form method="post">
+            {% csrf_token %}
+            
+            <!-- Dados Pessoais -->
+            <div class="form-group">
+                <label for="{{ form.nome_estudante.id_for_label }}">Nome do Estudante</label>
+                {{ form.nome_estudante }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.matricula.id_for_label }}">Matrícula</label>
+                {{ form.matricula }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">Email</label>
+                {{ form.email }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.curso.id_for_label }}">Curso</label>
+                {{ form.curso }}
+            </div>
+
+            <!-- Itens -->
+            <div class="form-group">
+                <label>Deseja Caderno?</label>
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label class="btn" data-value="True">
+                        <input type="radio" name="deseja_caderno" value="True" required> Sim
+                    </label>
+                    <label class="btn" data-value="False">
+                        <input type="radio" name="deseja_caderno" value="False" required> Não
+                    </label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Deseja Garrafa?</label>
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label class="btn" data-value="True">
+                        <input type="radio" name="deseja_garrafa" value="True" required> Sim
+                    </label>
+                    <label class="btn" data-value="False">
+                        <input type="radio" name="deseja_garrafa" value="False" required> Não
+                    </label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Deseja Camisa?</label>
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label class="btn btn-outline-primary">
+                        <input type="radio" name="deseja_camisa" id="deseja_camisa_sim" value="True" 
+                               onchange="toggleTamanhoCamisa(true)" required> Sim
+                    </label>
+                    <label class="btn btn-outline-primary">
+                        <input type="radio" name="deseja_camisa" id="deseja_camisa_nao" value="False" 
+                               onchange="toggleTamanhoCamisa(false)" required> Não
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Campo de tamanho (inicialmente oculto) -->
+            <div class="form-group" id="tamanho_camisa_group" style="display:none;">
+                <label for="tamanho_camisa">Tamanho da Camisa</label>
+                <select name="tamanho_camisa" id="tamanho_camisa" class="form-control">
+                    <option value="">...</option>
+                    <option value="P">P</option>
+                    <option value="M">M</option>
+                    <option value="G">G</option>
+                </select>
+            </div>
+
+            <!-- Bolsista -->
+            <div class="form-group">
+                <label>É Bolsista PAAE?</label>
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label class="btn" data-value="True">
+                        <input type="radio" name="bolsista_paae" value="True" required> Sim
+                    </label>
+                    <label class="btn" data-value="False">
+                        <input type="radio" name="bolsista_paae" value="False" required> Não
+                    </label>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-custom btn-block">Cadastrar</button>
+        </form>
+    </div>
+
+    <script>
+        // Aplica estilos imediatamente
+        function applyInitialStyles() {
+            document.querySelectorAll('.btn-group-toggle').forEach(group => {
+                group.querySelectorAll('input[type="radio"]').forEach(radio => {
+                    const label = radio.parentElement;
+                    
+                    // Remove todas as classes de cor
+                    label.classList.remove(
+                        'btn-success', 'btn-danger',
+                        'btn-outline-success', 'btn-outline-danger',
+                        'btn-outline-primary', 'active'
+                    );
+                    
+                    // Aplica estilo baseado no estado
+                    if (radio.checked) {
+                        label.classList.add(radio.value === "True" ? 'btn-success' : 'btn-danger', 'active');
+                    } else {
+                        label.classList.add(radio.value === "True" ? 'btn-outline-success' : 'btn-outline-danger');
+                    }
+                });
+            });
+        }
+        
+        // Chama a função imediatamente
+        applyInitialStyles();
+        
+        // Configura os eventos após o DOM carregar
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.btn-group-toggle input[type="radio"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    const group = this.closest('.btn-group-toggle');
+                    
+                    // Atualiza todos os botões do grupo
+                    group.querySelectorAll('.btn').forEach(label => {
+                        const input = label.querySelector('input');
+                        
+                        // Remove todas as classes de cor
+                        label.classList.remove(
+                            'btn-success', 'btn-danger',
+                            'btn-outline-success', 'btn-outline-danger',
+                            'active'
+                        );
+                        
+                        // Aplica o novo estilo
+                        if (input.checked) {
+                            label.classList.add(input.value === "True" ? 'btn-success' : 'btn-danger', 'active');
+                        } else {
+                            label.classList.add(input.value === "True" ? 'btn-outline-success' : 'btn-outline-danger');
+                        }
+                    });
+                    
+                    // Controle do campo de tamanho da camisa
+                    if (this.name === 'deseja_camisa') {
+                        toggleTamanhoCamisa(this.value === "True");
+                    }
+                });
+            });
+        });
+        
+        function toggleTamanhoCamisa(mostrar) {
+            const tamanhoGroup = document.getElementById('tamanho_camisa_group');
+            if (!tamanhoGroup) return;
+            
+            const tamanhoSelect = document.getElementById('tamanho_camisa');
+            if (mostrar) {
+                tamanhoGroup.style.display = 'block';
+                tamanhoSelect && tamanhoSelect.setAttribute('required', 'required');
+            } else {
+                tamanhoGroup.style.display = 'none';
+                tamanhoSelect && tamanhoSelect.removeAttribute('required');
+                tamanhoSelect && (tamanhoSelect.value = '');
+            }
+        }
+        </script>
+</body>
+</html>

@@ -27,6 +27,17 @@ SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev-key-' + os.urandom(32).hex()
 # Configuração de ambiente
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
+# Configuração para produção no VPS
+ALLOWED_HOSTS = [
+    'material-requisition.chatbee.site',
+    'localhost',
+    '127.0.0.1',
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://material-requisition.chatbee.site',
+]
+
 # Configuração para produção no Render
 if os.environ.get('RENDER'):
     DEBUG = False
@@ -136,16 +147,15 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/5.1/topics/i18n/
+LANGUAGE_CODE = 'pt-br'  
 
-LANGUAGE_CODE = 'en-us'
+TIME_ZONE = 'America/Sao_Paulo' 
 
-TIME_ZONE = 'UTC'
+USE_I18N = True  
 
-USE_I18N = True
+USE_L10N = True  
 
-USE_TZ = True
+USE_TZ = True  
 
 
 # Static files (CSS, JavaScript, Images)
